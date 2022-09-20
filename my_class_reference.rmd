@@ -35,6 +35,7 @@ library(tidyverse)
 
 
 ### Summarizing
+Lubridate (pre-lab o2) it has to deal with time and dates
 
 I need to use group_by and summariz. Here's an example of grouping by county and calculating counts, sum and other descriptive statistics.
 
