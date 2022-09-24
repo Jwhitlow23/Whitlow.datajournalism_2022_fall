@@ -158,7 +158,7 @@ Now that we've gotten a look, we can use `case_when` to give our new category co
 **Answer** 
 This statement is using mutate to categorize donations by minimum and maximum amount, it provides a range of how donations are given: Donations less than $100, Donations from $100-500, Donations from $500-$2900, and Donations greater than $2900. 
 ```{r}
-maryland_winred_categories <- maryland_winred %>%
+maryland_winred_categories <- wvmaryland_winred %>%
   mutate(
     amount_category = case_when(
         amount < 100 ~ "Less than $100",
