@@ -62,10 +62,12 @@ contrib_amounts %>%
 
 
 ```{r}
-  amount<10 <- (contrib_amounts) %>% 
-  filter(amount_category = "Less than $10") 
-%>% select (first_name,last_name, aggregate_amount,amount, amount_category)
-  summarize (amount_category==less.than.10) 
+ less_than_10 <- wv_winred_contribs %>% 
+  filter (amount<10) %>% 
+  group_by (first_name,last_name) %>%  
+  summarise (number_of_contributions=n()) %>%  
+  arrange (desc(number_of_contributions))
+less_than_10
 ```
 
 
@@ -79,10 +81,10 @@ A4.
 
 ```{r}
 wv_winred_contribs %>% 
-  mutate (month= floor_date(date=mdy(date))"month")) %>% 
-group by(month) %>%  
-    summarise(total_amount=sum(amount)) %>%  
-    arrange(desc(total_amount))
+  mutate (month= floor_date(date,"month")) %>% 
+group_by(month) %>%  
+    summarise(total=n())) %>%  
+    arrange(desc(total))
 
 
 ```
@@ -92,4 +94,7 @@ Q5. How many contributions of $2,900 - the individual maximum donation - were th
 A5.I don't know.  
 I'm really frustrated because now its saying it's not reading the "read.rsv.." So maybe nothing is coming out right because of the very first step but It was fine when I was in class and saved it. Even Thursday, I was working on it and the "rsv" wasn't  a problem until now.  I know I can get it. This time, I just have to submit what I have,and I think it's all I can think of 
 ```{r}
+wv_winred_contribs %>% 
+  filter(amount=2900) %>%  
+  arrange (date)
 ```
