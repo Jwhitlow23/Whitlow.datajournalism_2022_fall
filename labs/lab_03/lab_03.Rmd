@@ -15,18 +15,21 @@ knitr::opts_chunk$set(echo = TRUE)
 options(scipen=999)
 
 # Load the tidyverse here
-
+library(tidyverse)
 # Load janitor here
-
+install.packages('janitor')
 ```
 
 ## Load data
 ```{r}
+md_contribs <- read_rds("data/lab_03.rds")
+  
 # Write code to load MD slice of FEC House candidate contribution data and call it md_contribs.
 # The data is called lab_03.rds, and is in the data folder alongside lab_03.Rmd (this data notebook)
 
 
 ```
+
 
 ## Answer questions
 
@@ -34,18 +37,54 @@ Q1: Which seven cities in Maryland had the largest _number_ of contributions fro
 
 Note: To answer this question, you'll need to see every variation of the "contributor_city" for the top seven cities, which you should identify through some initial analysis. Then find variations of them and change those variations into the most common version.
 
-A1:
+A1:I know this is used to group the city and contributions: 
+group_by(contributor_city) %>% 
+summarise (contributor_city,contribution_receipt_amount) %>% 
+arrange(desc(contribution_receipt_amount))
+
+I have no clue why after I installed the "janitor" packages so many times, it can't find the duplicated rows. If I could get past that, then the rows would not be duplicated. I've tried "case when"to correct the misspelling of Bethesda but it keeps saying that it doesn't recognize contributor_city after I had already "announced" it in the code. Theoretically, I know what to do, it's just not working so I have to move on and go to the next questions because I've spent hours on this first question. 
+Maybe it's: CHEVY CHASE,ROCKVILLE,BETHESDA,POTOMAC,LAUREL,TOWSON ,ANNAPOLIS
+
+One of my attempts, I had the city and amount side by side, but I couldn't organize in order no matter what
+
 ```{r}
+cleaned_md_contribs %>% 
+  distinct(contributor_city,contribution_receipt_amount) %>% 
+mutate(contributor_city = case_when(
+    contributor_city == "BETHSDA" ~ "BETHESDA",
+    TRUE ~ contributor_city
+))
 
-# Write your code in this codeblock.
+cleaned_md_contribs  %>% 
+arrange(desc(contributor_receipt_amount))
+```
 
+```{r}
+cleaned_md_contribs %>% 
+  mutate(contributor_city = case_when(
+    contributor_city == "BETHSDA" ~ "BETHESDA",
+    TRUE ~ contributor_city)) %>% 
+  
+group_by(contributor_city) %>% 
+summarise (contributor_city,contribution_receipt_amount) %>% 
+arrange(desc(contribution_receipt_amount))
+cleaned_md_contribs 
+```
+```{r}
+total_md_contribs <- cleaned_md_contribs %>%
+  summarise(total_contribution_receipt_amount = sum(contribution_receipt_amount)) 
+cleaned_md_contribs 
 ```
 
 Q2: Find the 5-digit ZIP code in Maryland that had the highest total amount of contributions (by dollar value). Where is that zip code and what kind of area is it? Which committee is the largest recipient of money from that zip code? How many of the top five recipients are Maryland candidates?
 
-A2:
+A2: So I can organize the zipcodes to show five numbers. I still have to figure out how to arrange the highest contributions 
 
 ```{r}
+cleaned_md_contribs %>% 
+mutate(contributor_zip = str_sub(contributor_zip, start=1L, end=5L))
+arrange(desc(
+
 # Hint
 # First, create a dataframe that shows the top 5-digit ZIP code by total dollar amount
 # Second, use the top ZIP code in the dataframe you just created and create a new dataframe that shows the committee that got the most money from that ZIP code.
@@ -59,7 +98,8 @@ Feel free to add any interesting "color" (little interesting details) you find i
 A3:
 
 ```{r}
-
+glimpse(cleaned_md_contribs) 
+  
 # Hint
 # First, create a dataframe of top individual contributors
 # Second, use information from that dataframe to examine individual donations from the original md_contribs dataframe.
