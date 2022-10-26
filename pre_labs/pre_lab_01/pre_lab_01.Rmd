@@ -12,7 +12,7 @@ options(scipen=999)
 
 ## About this notebook
 
-This notebook contains code and explanatory text that your should review and run as you read through chapters 1 - 5 of the course textbook, "Data Journalism with R and the Tidyverse". Answer questions and edit the document as directed.
+This notebook contains code and explanatory text that you should review and run as you read through chapters 1 - 5 of the course textbook, "Data Journalism with R and the Tidyverse". Answer questions and edit the document as directed.
 
 Running this notebook will help you understand key data analysis methods and concepts that you will put into practice during this week's lab. When you come across a new command or verb in R, you should add it to your class reference notebook file along with what it's used for.
 

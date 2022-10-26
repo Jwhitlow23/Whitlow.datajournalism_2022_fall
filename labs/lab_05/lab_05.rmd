@@ -58,6 +58,7 @@ cleaned_md_expenses <-md_expenses %>% clean_names()
 cleaned_md_expenses
 #Making sure the date columns are datatypes: 
 cleaned_md_expenses <- cleaned_md_expenses %>% mutate(expenditure_date=mdy(expenditure_date))
+glimpse(cleaned_md_expenses)
 
 ```
 
@@ -69,30 +70,40 @@ Using OpenRefine, create a project using that CSV file, create a copy of the `pa
 
 Then, when you are done standardizing `payee_clean`, export it as a new CSV file to your data folder, *giving it a different name* and read it back into RStudio as a new dataframe.
 
-Then, using that `payee_clean` column, write code to find all of the spending where Facebook is the payee and calculate the total amount of spending for each committee and present the results showing the committee that spent the most first.
+Then, using that `payee_clean` column, write code to find all of the spending where Facebook is the payee and [calculate the total amount of spending for each committee] and present the results showing the committee that spent the most first.
 
-**A1.**    write_csv(dataframe,"data/my_dataframe.csv") 
+**A1.**  I know the code is right for "drop.na" but I posted this code right below to see if I needed to use "true." I'm really doubing myself because I don't see a change of observations between md_expenses and cleaned_md_expenses. I've lsited every code I've tried and
+
+cleaned_md_expenses %>%  
++ group_by(payee_name,expense_category) %>% 
++    drop_na(payee_name,expense_category) %>% 
++ arrange(payee_name)
   
   cleaned_md_expenses <- md_expenses %>%
  mutate(payee_name_clean= key_collision_merge(payee_name)) %>%
   select(payee_name, payee_name_clean everything())
-
-```{r}
-#One of them is "Media". Write code to isolate Media expenses where the name of the payee is not NA.
-
-cleaned_md_expenses %>%  
-group_by(payee_name,expense_category) %>% 
-   drop_na(payee_name,expense_category) %>% 
-arrange(payee_name)
-
+  
 cleaned_md_expenses <- md_expenses %>%
   mutate(payee_clean=key_collision_merge(payee_name)) %>%
   select(payee_name,payee_clean,everything())
+  
+ cleaned_md_expenses %>% group_by(payee_name, expense_category) %>% 
+   drop_na(payee_name, expense_category = "Media") %>% 
+arrange(payee_name)
+
 
 cleaned_md_expenses
+```{r}
+#One of them is "Media". Write code to isolate Media expenses where the name of the payee is not NA. - filter on media expenses
+
+media_expenses <- cleaned_md_expenses %>%  
+  # filter
+    drop_na(payee_name) %>% 
+
 
 #Then, using `write_csv`, make a CSV file in your data folder. 
 
+write_csv(media_expenses, "data/media_expenses.csv")
 
 ```
 
