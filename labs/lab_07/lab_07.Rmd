@@ -115,7 +115,7 @@ Join the ZCTA dataframe to the zip totals dataframe and calculate a per capita r
 * Which zip code *that has returned at least 100 mail ballots* has the highest per capita rate? 
 * Where is that zip code and what does Census Reporter say about its demographics? 
 * For zip codes with a per capita rate of at least 10 returned ballots per 100 people, how many have median incomes of at least $100,000? 
-* How many have median incomes less than the state figure of $68,957? 
+* How many have median incomes less than the state figure of $68,957?
 * What's the most interesting one from this last result?
 
 **A5**
