@@ -47,7 +47,7 @@ You'll also need to load the list of American Community Survey variables from th
 ```{r}
 acs5 <- load_variables(2020, "acs5") 
 
-acs5
+median20<- get_acs(geography = "county", variables= "B01002_001", year= 2020, state= 'MD')
 ```
 
 ## Answer questions
@@ -71,7 +71,9 @@ median20 %>%
    med50 = case_when(
         estimate >=50 ~ "at least age of 50" )
   ) %>% 
-arrange(med50)
+  
+  arrange(desc(med50))
+
 
 ```
 
@@ -92,21 +94,23 @@ mdcounties5_17<- get_acs(geography = "county", variables= "B16004_002", year= 20
 
 mdcounties_engverywell<-get_acs(geography = "county", variables= "B16004_005", year= 2020, state= 'MD') %>% 
 rename(speak_well = estimate) %>% 
- select(-variable) %>% 
+  select(-variable)
 
 
 
 ```
 
 ```{r}
-together<-mdcounties5_17 %>% left_join(mdcounties_engverywell, by=("GEOID"="NAME")) %>% 
-arrange(speak_well,total_pop)
+together<- mdcounties5_17 %>% inner_join(mdcounties_engverywell, by=c("GEOID"="GEOID", "NAME"="NAME")) %>% 
+arrange(desc(speak_well))
+        
+
 ```  
 
-**Q4** Given the counties with the largest percentage of 5-17 year-olds that speak Spanish at home, which county stands out to you in the data as different from the others? How would you describe the top 5 counties? How would you describe Garrett County's numbers?
+**Q4** Given the counties with the largest percentage of 5-17 year-olds that speak English at home, which county stands out to you in the data as different from the others? How would you describe the top 5 counties? How would you describe Garrett County's numbers?
 
 **A4** 
-I didn't know there was a large population of 5-17 year olds in Prince George's County. It lets me know more about the city since I volunteer at GreenBelt, a Prince George's county school, the demographics match with the counties that have a high population. The higher percentage counties have a higher "moe" as well. Kent County stands out the most because it has the least amount of 5-17 year olds. 
+All of these counties have a large amount of adolescents that are in a suburban community.Being in Prince George's county, there's a lot of schools and a big focus on their education system and a curfew put in place for teenagers.The larger the population, the more adolescents that can speak English at home. Garrett County has a small number of adolescents and is not suburban, it looks very rural. 
 
 **Q5** Pennsylvanians are currently requesting and submitting mail ballots for the November election. You'd like to know more about the people who live in the areas sending in mail ballots. Read in the `zip_totals.csv` file in the data folder containing the number of returned mail ballots per zip code. Then create a dataframe of Pennsylvania ZCTAs that include the following variables from the 2019 ACS: total population and median income. You will need to add `output = "wide"` to the get_acs function so that you get columns for those two variables' estimates and margins of error.
 
@@ -119,9 +123,25 @@ Join the ZCTA dataframe to the zip totals dataframe and calculate a per capita r
 * What's the most interesting one from this last result?
 
 **A5**
-I know I can do this one, I'm just crunched for time because of something that happened recently.
+Zipcode 17233 has the highest per capita rate. It is McConnelsburg County, Pennsylvania which has 1,150 people. Most of the peole living there are in their mid-40s and ninety-five percent white. So far, it's really rare to see someone who has a median income of $100,000. I see a trend of maybe the highest being $30,000 for the median income. I have a feeling this data is wrong but if it's true, the fact that there is little to none median incomes of at least 100,000 when at least 10 returned mail-in ballots. I think the McConnelsburg County is interesting if I calculated the per capita correctly, I highly doubt it, but I need to move on to Lab 5, 6, and now 8. I'll also review Lab 4, I want this lab to be the last Lab I lag behind. 
 
 ```{r}
+zip_totals<-read.csv("data/pa_zip_totals.csv")
+zip_totals <- zip_totals %>% mutate(across(zip,as.character))
 
+#Then create a dataframe of Pennsylvania ZCTAs that include the following variables from the 2019 ACS: total population and median income.
+
+acs1 <- load_variables(2019, "acs1") 
+#Then create a dataframe of Pennsylvania ZCTAs that include the following variables from the 2019 ACS: total population and median income
+mail_in_pop_medinc<- get_acs(output = "wide",geography = "zcta", variables= c(median_income="B07011_001", total_pop="B01003_001"), year= 2019, state= 'PA')
+
+#Join the ZCTA dataframe to the zip totals dataframe 
+joined_zip_pa<- mail_in_pop_medinc %>% inner_join(zip_totals, by=c("GEOID"="zip")) %>% 
+ select(-NAME) %>% 
+mutate(per_capita_rate=(total_popE/100)/count) %>% 
+arrange(desc(per_capita_rate))
 ```
-
+```{r}
+#then calculate per capita later for mail ballots per 100 population in each ZCTA
+  
+```
