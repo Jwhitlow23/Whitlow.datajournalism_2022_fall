@@ -100,7 +100,7 @@ After we've invoked the ggplot() function, you'll notice we're using a + symbol.
 ### Task 5: Run the following code
 **Task** Run the following code. Explain what you see after running the code in the space below.
 **Answer**
-We specified the type of graph we want, a bar graph (geom_bar). The x-axiz shows the county and the total differences are on the y axis but they are not in a particular order.
+We specified the type of graph we want, a bar graph (geom_bar). The x-axis shows the county and the total differences are on the y axis but they are not in a particular order.
 
 ```{r}
 maryland_top_counties %>%

@@ -103,6 +103,7 @@ rename(speak_well = estimate) %>%
 ```{r}
 together<- mdcounties5_17 %>% inner_join(mdcounties_engverywell, by=c("GEOID"="GEOID", "NAME"="NAME")) %>% 
 arrange(desc(speak_well))
+
         
 
 ```  
@@ -142,6 +143,5 @@ mutate(per_capita_rate=(total_popE/100)/count) %>%
 arrange(desc(per_capita_rate))
 ```
 ```{r}
-#then calculate per capita later for mail ballots per 100 population in each ZCTA
   
 ```
