@@ -151,28 +151,69 @@ my_dataframe <- mutate_all(my_dataframe, ~replace_na(.,0))
 5. Add a label for each point that shows the name of the county using geom_text(). Try to make the names as easy to read as possible - 
 6. In the answer space below, describe what you see and answer the questions posed above. In a general sense, what do you think this means? Feel free to consider the actual raw values: how would you report out the main point(s) of this chart?
 
-**A3.** I could not figure out how to make the "NA's" dissappear for councilmanic_district_code. I tried to use the same formula and use "is.character" but it could not find the object. 
- mutate_if(is.numeric,is.character(COUNTY_CODE,COUNTY_NAME,congressional_district_code,legislative_district_code,councilmanic_district_code,Precinct,VOTER_STATUS,GENDER_CODE,PARTY_CODE,EARLY_VOTE_CENTER) ~replace_na(., 0)) %>% 
- %>% 
+**A3.** 
+Overall, it seems like women vote more than men. Since I'm not from here, I can tell which counties have a larger population than others like Prince George's, Baltimore County,and etc. The bigger counties had the highest percentage for voting early.
+
+Does the percentage of returned ballots by younger voters vary depending on the percentage of younger residents? Are there differences in party and gender? Do certain counties have a higher number of younger voters casting ballots early?
+
+  
 ```{r}
 early_voting<-read_csv("data/earlyvoting_raw.csv") %>% 
  clean_names() %>% 
+  filter(age_group=="18-24") %>% 
   mutate_if(is.numeric,~replace_na(., 0)) %>% 
-filter(age_group=="18-24") %>% 
-   group_by(county_name,gender_code) %>% 
- mutate(total_early_casts=( day1 + day2 + day3 + day4 + day5 + day6 + day7 + day8)) 
- 
+  mutate(all_days=( day1 + day2 + day3 + day4 + day5 + day6 + day7 + day8)) %>% 
+  group_by(county_name,gender_code) %>% 
+ summarise(grand_total = sum(all_days)) 
+
+ early_voting <- early_voting %>% 
+  pivot_wider(names_from = gender_code, values_from = grand_total) %>% 
+  clean_names() %>% 
+  rename(unk = na) %>% 
+ mutate(total_votes=(f+m+unk)) %>% 
+mutate(percent_fem=(f/total_votes)*100) %>% 
+ mutate(percent_male=(m/total_votes)*100) %>% 
+ mutate_if(is.numeric,~replace_na(., 0))
+#^^^^rename the NA column to "UNK" and then replace any NAs in the gender columns with 0s using the same approach you used in step 2. Finally, calculate the total number of votes cast and the percentage of male and female early voters for each county.
+```
+
+```{r}
+library(ggplot2) 
+ggplot(early_voting, aes(x=percent_male, y=percent_fem)) +
+  geom_point()
+geom_text(data=early_voting,label=county_name) +
+labs(
+    title="Voting in Maryland and their gender differences",
+    x = "Male",
+    y = "Female",
+    caption = "source: Maryland State Board of Elections" ) 
 
 
-
- #group the counties, group the genders, group total ballots with
 
 
 ``` 
 
 ```{r}
-percent_groups<- early_voting %>%  
-  distinct(county_name,gender_code)
+#This is what I originally tried and it did not work
+ ggplot() +
+  geom_point(aes(x=percent_male, y=percent_fem)) + 
+  geom_text(data=early_voting,label=county_name ) +
+labs(
+    title="Voting in Maryland and their gender differences",
+    x = "Male",
+    y = "Female",
+    caption = "source: Maryland State Board of Elections" ) 
+#calculate the total number of votes cast and the percentage of male and female early voters for each county 
+
+  
+ 
+``` 
+
+
+``` 
+
+```{r}
+
 
 
 ``` 
@@ -180,11 +221,5 @@ percent_groups<- early_voting %>%
   
   
 
-  #total votes 
-
-    
-  #county name 
-  
-  #Gender 
   
 ```
