@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(scipen=999)
 ```
 
 ## You will need
@@ -40,7 +41,7 @@ You MUST do the following things when answering this question:
 * Put the answer below along with the URL of your chart.
 
 **A1.** 
-Hogan beat Cox in all of Maryland's counties. Talbot had the highest percent different of thirty percent. The lowest percent difference was in Somerset. For some reason, St. Mary's data did not show up at all, it was the only county but I believe this is user error. 
+Hogan beat Cox in all of Maryland's counties. Garrett had the highest percent when calculating Hogan's votes and Cox because of the size of the county.  For some reason, St. Mary's data did not show up at all, it was the only county but I believe this is user error. 
 https://datawrapper.dwcdn.net/3eW6I/1/  
 ```{r}
 #Load files, cleaned, performance percentages 
@@ -80,10 +81,13 @@ Keep in mind that 2020 is the year where social distancing was implemented.Keep 
 
 
 ```{r}
-md_votes_by_type<-read_csv("data/md_votes_by_type.csv") 
-
-# Just make chart in datawrapper 
+md_votes_by_type<-read_csv("data/md_votes_by_type.csv")
 ```
+
+
+
+
+
 
 
 #Put percent difference columns hogan and for cox, (hogan-cox) 
@@ -100,10 +104,39 @@ md_votes_by_type<-read_csv("data/md_votes_by_type.csv")
 What do you think the story here is, and what would you want to know more about? Put the answer below along with the URL of your chart.
 
 **A3.** 
-I had trouble trying to filter the zip codes, I will come back 
-filter(24001,24003,24510,24005,24009,24011,24013,24015,24017,24019,24021,24023,24025,24027,24029,24031,24033,24035,24037,24039,24041,24043,24045,24047)
-)
-```{r}
-md_actblue<- read_csv("data/md_actblue_zip.csv") 
+https://datawrapper.dwcdn.net/tqJpd/1/ 
 
+The story here is that there is not a lot of people who are ActBlue donors. The percentage is fairly low and the highest eprcentage for zipcodea was aproximately 12 percent. 
+```{r}
+md_actblue<- read_csv("data/md_actblue_zip.csv")
+md_actblue$zip <- as.character(md_actblue$zip)
+
+census_api_key("d986ddea721b5f802dccc83bae56a6dd3bd93b44", install =TRUE) 
+
+vars <- load_variables(year = 2020,
+                       dataset = "acs5",
+                       cache = TRUE)
+
+md_zips_2020 <- get_acs(geography = "zcta",
+                        variables = c(medzip = "B01001_001"),
+                        state = "MD",
+                        year = 2019)
+
+
+md_actblue_clean <- md_actblue %>% 
+  inner_join(md_zips_2020, by=c('zip' = 'GEOID'))
+
+md_actblue_clean <- md_actblue_clean %>% 
+  select(zip, total) %>% 
+  rename(zip_amount = total) %>% 
+  mutate(total_amount = sum(zip_amount)) %>% 
+  mutate(percent_zip = (zip_amount/total_amount)*100)
+
+# checking for duplicates
+md_actblue_clean %>% 
+  group_by(zip) %>% 
+  summarise(count = n()) %>% 
+  arrange(desc(count))
+
+write_csv(md_actblue_clean, "data/md_actblue_clean.csv")
 ```
