@@ -1,0 +1,67 @@
+---
+title: "Jamille Whitlow's States Profile"
+output: html_notebook
+---
+#C00136457 (Republican)	C00178038 (Democratic) 
+#Where they got their money and spent on what? 
+#Potential story ideas 
+- Need senates_raising,senate_spend, house_raising,house_spend  
+#Importing #individual contributions and all expenditures
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(rvest)
+library(lubridate)
+library(refinr)
+#senate first 
+```
+
+```{r}
+senate_total<- read_csv("senate_totals.csv")
+senate_indexpend<-read_csv("senate_indexpend.csv")
+house02_total<-read_csv("house02_total.csv")
+house02_indexpend<-read_csv("house02_indexpend.csv") 
+house01_total<-read_csv("house01_total.csv")
+house01_indexpend<-read_csv("house01_indexpend.csv")
+```
+
+```{r}
+joined2_senate<-senate_indexpend %>% inner_join (senate_total, by="candidate_name") %>% 
+  group_by(committee_name) %>% 
+select(committee_name,total,candidate_name,party_full,total_receipts,total_disbursements) 
+
+joined2_senate<- read_csv("newdata/joined2_senate.csv")
+#This is supposed to be used so I can upload my csv to Open Refine. For some reason, it is not on my computer.The "joined csvs" were not showing up on my computer.  I had to problem-solve the best I can so I copied and pasted information to a different Excel Sheet so I canupload it to Datawrapper using your "favorite chart." It's the only way I can see every result in the chart, at least from a broad perspective. 
+
+#Open Refine is supposed to be used so I can eliminate duplicate committee names but my computer refuses to use Open refine, even after going to System Preferences so my computer can recognize it. I've deleted and tried and older version for my Mac (3.6.0 instead of 3.6.2). 
+
+#Senate Datawrapper: https://datawrapper.dwcdn.net/1CnyH/1/
+
+
+```
+
+```{r}
+joined2_house01<-house01_indexpend %>% inner_join (house01_total, by="candidate_name") %>% 
+  group_by(committee_name) %>% 
+select(committee_name,total,candidate_name,party_full,total_receipts,total_disbursements)
+
+joined2_house01
+
+#HOUSE DATAWRAPPER: https://datawrapper.dwcdn.net/k9R2M/3/ 
+```
+```{r}
+joined2_house02<-house02_indexpend %>% inner_join (house02_total, by="candidate_name") %>% 
+  group_by(committee_name) %>% 
+select(committee_name,total,candidate_name,party_full,total_receipts,total_disbursements)
+```
+#Answers: 
+This is a link to my makeshift spreadsheet that I copied and pasted to Datawrapper: https://docs.google.com/spreadsheets/d/17bRxfrtOac2DuQSj9eDJZ998kTC4ToPME-pw_FPkwvA/edit?usp=sharing. 
+
+For Republicans, most of their money came from the Congressional Leadership fund. This fund donated millions to support Republicans to be in the house and in the senate. 
+
+For Democrats, I believe most of their contributions were independent and not from a conglomerate of organizations. I say this because the pie chart showed every organization that has contirbuted. When I look up the contributions that hdonated the most money, majority of them were in support from Republicans. This only leads me to believe that Democrats receive most of their funding from an individual basis. 
+
+
+
+
