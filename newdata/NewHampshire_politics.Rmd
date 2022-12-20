@@ -1,0 +1,66 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(refinr)
+
+republican_dis<- read_csv("~/Desktop/Whitlow.datajournalism_2022_fall/newdata/republican_dis.csv") %>% 
+group_by(recipient_name) %>% 
+  select(entity_type_desc,recipient_name,disbursement_description,recipient_state,disbursement_amount)
+
+republican_contrib<-read_csv("~/Desktop/Whitlow.datajournalism_2022_fall/newdata/republican_rec.csv") %>% 
+group_by(contributor_name) %>% 
+  select(contributor_name,entity_type_desc,contributor_state,contribution_receipt_amount,contributor_aggregate_ytd)
+
+democrat_dis<-read_csv("~/Desktop/Whitlow.datajournalism_2022_fall/newdata/demo_dis.csv") %>%
+   group_by(recipient_name) %>% 
+  select(recipient_name,entity_type_desc,disbursement_description,recipient_state,disbursement_amount) %>% 
+arrange(desc(disbursement_amount)) %>%
+ head(contributor_name,n=10) 
+ 
+democrat_contrib<-read_csv("~/Desktop/Whitlow.datajournalism_2022_fall/newdata/democrat_rec.csv") %>% 
+group_by(contributor_name) %>% 
+  select(contributor_name,entity_type_desc,contributor_state,contribution_receipt_amount,contributor_aggregate_ytd)
+```
+
+
+```{r}
+refined_democontrib<-read_csv("~/Desktop/Whitlow.datajournalism_2022_fall/newdata/refined_democontrib.csv") %>% 
+  head(contributor_name,n=10) %>% 
+group_by(contributor_name) %>% 
+  select(contributor_name,entity_type_desc,contributor_state,contribution_receipt_amount,contributor_aggregate_ytd)
+
+
+refined_republican_contrib<-read_csv("~/Desktop/Whitlow.datajournalism_2022_fall/newdata/refined_republican_contrib.csv") %>% 
+  group_by(contributor_name) %>% 
+  select(contributor_name,entity_type_desc,contributor_state,contribution_receipt_amount,contributor_aggregate_ytd) %>%  
+  arrange(desc(contribution_receipt_amount)) %>% 
+   head(contributor_name,n=10)
+
+
+refined_republican_dis<-read_csv("~/Desktop/Whitlow.datajournalism_2022_fall/newdata/refined_republican_dis.csv") %>% 
+group_by(recipient_name) %>% 
+  select(recipient_name,entity_type_desc,disbursement_description,recipient_state,disbursement_amount) %>% 
+arrange(desc(disbursement_amount)) %>%  
+   head(contributor_name,n=10)
+
+#democrat_dis had no results for refining
+
+#Datawrapper,Democrats disbursements: https://datawrapper.dwcdn.net/wGIv0/1/
+#Datawrapper, Republicans disbursements: https://datawrapper.dwcdn.net/9JIqQ/1/
+```
+
+
+ 
+
+
+```{r}
+```
+
